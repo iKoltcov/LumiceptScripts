@@ -14,6 +14,9 @@ class BiconvexLens(PNode):
         part.back_medium = SimpleMedium(name='rgb_glass_{}'.format(self.n), refr_ind=self.n)
 
     def Init(self):
+        pass
+
+    def Eval(self):
         AsphericalSurface = GetClass(Shape, 'Aspherical Surface')
         Cylinder = GetClass(Shape, 'Cylinder')
 
@@ -41,10 +44,8 @@ class BiconvexLens(PNode):
         self.Rotate(0, 90, 0)
         self.SetChildren( [ firstSurface_node, cylinderSurface_node, secondSurface_node ] )
 
-    def Eval(self):
         print("Length of lens is {}".format(self.t))
         print("Cylinder length is {}".format(self.cylinderLength))
         print("Semi diameter is {}".format(self.semiD))
         print("Arrow of curvature R1 is {}".format(self.arrowR1))
         print("Arrow of curvature R2 is {}".format(self.arrowR2))
-        pass
