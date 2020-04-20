@@ -8,3 +8,4 @@
 ### BiconvexLens.pi
 Output:
 ![image](https://user-images.githubusercontent.com/13045113/79774264-43154d00-833b-11ea-88f1-e201b71397e0.png)
+![image](https://user-images.githubusercontent.com/13045113/79809996-9bb80a80-837a-11ea-9fba-b31774017dde.png)
