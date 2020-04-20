@@ -1,8 +1,8 @@
 class BiconvexLens(PNode):
-    n = Param("Refractive index", Size, 1.518096)
+    n = Param("Refractive index", Float, 1.518096)
     f = Param("Focal lenght", Size, 3.0)
     r1 = Param("First radius of curvature", Size, 3.05)
-    r2 = Param("Second radius of curvature", Size, -3.00)
+    r2 = Param("Second radius of curvature", Size, -3.05)
 
     def ConvertToGlass(self, part):
         part.surf_attrs.SetKd(0.0, RGBSurfColor(1,1,1))
