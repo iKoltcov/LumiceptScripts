@@ -1,0 +1,50 @@
+class BiconvexLens(PNode):
+    n = Param("Refractive index", Size, 1.518096)
+    f = Param("Focal lenght", Size, 3.0)
+    r1 = Param("First radius of curvature", Size, 3.05)
+    r2 = Param("Second radius of curvature", Size, -3.00)
+
+    def ConvertToGlass(self, part):
+        part.surf_attrs.SetKd(0.0, RGBSurfColor(1,1,1))
+        part.surf_attrs.SetKs(0.0)
+        part.surf_attrs.SetKtd(0.0)
+        part.surf_attrs.SetKts(1.0)
+        part.surf_attrs.SetKf(0.0)
+        part.front_medium = SimpleMedium(name='rgb_empty', refr_ind=1.0)
+        part.back_medium = SimpleMedium(name='rgb_glass_{}'.format(self.n), refr_ind=self.n)
+
+    def Init(self):
+        AsphericalSurface = GetClass(Shape, 'Aspherical Surface')
+        Cylinder = GetClass(Shape, 'Cylinder')
+
+        self.t = (1/(self.f*(self.n-1))-(1/self.r1)+(1/self.r2))*((self.r1*self.r2*self.n)/(self.n-1))
+        self.semiD = self.f * 0.25
+        self.arrowR1 = abs(self.r1) - sqrt(abs(self.r1) * abs(self.r1) - self.semiD * self.semiD)
+        self.arrowR2 = abs(self.r2) - sqrt(abs(self.r2) * abs(self.r2) - self.semiD * self.semiD)
+        self.cylinderLength = self.t - (self.arrowR1 + self.arrowR2)
+
+        firstSurface = AsphericalSurface(h=self.semiD, h0=0, r=self.r1)
+        self.ConvertToGlass(firstSurface.parts[0])
+        firstSurface_node = MeshNode(firstSurface, name="FirstSurface")
+        firstSurface_node.Translate(0, 0, 0)
+
+        cylinderSurface = Cylinder(radius=self.semiD, length=self.cylinderLength)
+        self.ConvertToGlass(cylinderSurface.parts[0])       
+        cylinderSurface_node = MeshNode(cylinderSurface, name="CylinderSurface")
+        cylinderSurface_node.Translate(0, 0, self.arrowR1 + self.cylinderLength * 0.5)
+
+        secondSurface = AsphericalSurface(h=self.semiD, h0=0, r=self.r2)
+        self.ConvertToGlass(secondSurface.parts[0])
+        secondSurface_node = MeshNode(secondSurface, name="SecondSurface")
+        secondSurface_node.Translate(0, 0, self.arrowR1 + self.arrowR2 + self.cylinderLength)
+
+        self.Rotate(0, 90, 0)
+        self.SetChildren( [ firstSurface_node, cylinderSurface_node, secondSurface_node ] )
+
+    def Eval(self):
+        print("Length of lens is {}".format(self.t))
+        print("Cylinder length is {}".format(self.cylinderLength))
+        print("Semi diameter is {}".format(self.semiD))
+        print("Arrow of curvature R1 is {}".format(self.arrowR1))
+        print("Arrow of curvature R2 is {}".format(self.arrowR2))
+        pass
